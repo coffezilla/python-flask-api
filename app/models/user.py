@@ -1,5 +1,5 @@
 from . import db
-import uuid
+from ..schemas.user_schema import UserSchema
 
 
 class User(db.Model):

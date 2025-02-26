@@ -1,6 +1,6 @@
 from flask import jsonify, request
 import uuid
-from ..models.user import User
+from ..models.user import User, UserSchema
 from ..utils.uuid import is_valid_uuid
 from ..models import db
 
@@ -30,21 +30,28 @@ def get_user_by_id_service(user_id):
 
 # post
 def post_user_service():
+    schema = UserSchema()
     data = request.get_json()
 
-    if not data or 'username' not in data or 'email' not in data:
-        return {"message": "Missing some attribute"}
+    try:
+        user_data = schema.load(data)
+    except Exception as e:
+        return {"message": "schema error", "error": str(e)}, 400
+
+    # after the schema, this is not important
+    # if not data or 'username' not in data or 'email' not in data:
+    #     return {"message": "Missing some attribute"}
 
     new_user = User(
         id=str(uuid.uuid4()),  # Use UUID for user ID
-        username=data['username'],
-        email=data['email'],
+        username=user_data['username'],
+        email=user_data['email'],
     )
 
     db.session.add(new_user)
     db.session.commit()
 
-    return new_user.to_dict()
+    return schema.dump(new_user.to_dict())
 
 
 # patch

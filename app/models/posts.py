@@ -1,4 +1,5 @@
 from . import db
+from ..schemas.post_schema import PostSchema
 
 
 class Posts(db.Model):
