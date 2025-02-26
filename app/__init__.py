@@ -4,13 +4,13 @@ from flask_migrate import Migrate
 import os
 
 # routes
-from .routes.users_routes import users_bp
+from .routes.user_routes import user_bp
 from .routes.posts_routes import posts_bp
 
 # models
 # from app.models import *
 from app.models import db
-from app.models.users import Users
+from app.models.user import User
 from app.models.posts import Posts
 
 
@@ -28,7 +28,7 @@ def create_app():
         return {"message": "API Hello World"}
 
     with app.app_context():
-        app.register_blueprint(users_bp)
+        app.register_blueprint(user_bp)
         app.register_blueprint(posts_bp)
 
         if os.getenv('FLASK_ENV') == 'development':
