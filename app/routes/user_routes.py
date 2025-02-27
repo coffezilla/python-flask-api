@@ -1,47 +1,20 @@
-from flask import Blueprint, jsonify
-from ..models.user import User
-from ..services.users_service import get_users_service, get_user_by_id_service, post_user_service, delete_user_service, patch_user_service
+# routes/user_routes.py
+from flask import Blueprint, request
+from ..controllers.user_controller import get_users, get_user_by_id, post_user, delete_user, patch_user
 
 user_bp = Blueprint('user_bp', __name__)
 
+# GET /users
+user_bp.route('/users', methods=['GET'])(get_users)
 
-# get
+# GET /users/<id>
+user_bp.route('/users/<user_id>', methods=['GET'])(get_user_by_id)
 
+# POST /users
+user_bp.route('/users', methods=['POST'])(post_user)
 
-@user_bp.route('/users')
-def get_users():
-    users = get_users_service()
-    return jsonify(users)
+# DELETE /users/<id>
+user_bp.route('/users/<user_id>', methods=['DELETE'])(delete_user)
 
-# get by id
-
-
-@user_bp.route("/users/<user_id>", methods=['GET'])
-def get_user(user_id):
-    user = get_user_by_id_service(user_id)
-    return jsonify(user), 200
-
-# post
-
-
-@user_bp.route("/users", methods=['POST'])
-def store_user():
-    new_user = post_user_service()
-    return jsonify(new_user), 201
-
-
-# patch
-
-
-@user_bp.route('/users/<user_id>', methods=['PATCH'])
-def change_user(user_id):
-    user = patch_user_service(user_id)
-    return jsonify(user), 200
-
-# delete
-
-
-@user_bp.route("/users/<user_id>", methods=['DELETE'])
-def delete_user(user_id):
-    user = delete_user_service(user_id)
-    return jsonify(user), 200
+# PATCH /users/<id>
+user_bp.route('/users/<user_id>', methods=['PATCH'])(patch_user)
