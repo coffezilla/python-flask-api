@@ -6,6 +6,7 @@ import os
 # routes
 from .routes.user_routes import user_bp
 from .routes.posts_routes import posts_bp
+from .routes.auth_routes import auth_bp
 
 # models
 # from app.models import *
@@ -30,6 +31,7 @@ def create_app():
     with app.app_context():
         app.register_blueprint(user_bp)
         app.register_blueprint(posts_bp)
+        app.register_blueprint(auth_bp)
 
         if os.getenv('FLASK_ENV') == 'development':
             print("This is dev")
