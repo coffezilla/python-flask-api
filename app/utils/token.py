@@ -1,22 +1,33 @@
-# pip install PyJWT
 import jwt
 import datetime
 import os
 
 
 def generate_token(email):
-    user = email,
-    expiration_time = datetime.datetime.now(
+    user = email
+    # Access token expiration time (30 minutes)
+    access_expiration_time = datetime.datetime.now(
         datetime.timezone.utc) + datetime.timedelta(minutes=30)
 
-    token = jwt.encode({
+    # Refresh token expiration time (7 days, for example)
+    refresh_expiration_time = datetime.datetime.now(
+        datetime.timezone.utc) + datetime.timedelta(days=7)
+
+    # Generate access token
+    access_token = jwt.encode({
         'user': user,
-        "exp": expiration_time
+        'exp': int(access_expiration_time.timestamp())  # Convert to integer
     }, os.getenv('JWT_SECRET'), algorithm="HS256")
 
-    # have a bug in the way expiration_time comes
+    # Generate refresh token
+    refresh_token = jwt.encode({
+        'user': user,
+        'exp': int(refresh_expiration_time.timestamp())  # Convert to integer
+    }, os.getenv('JWT_SECRET'), algorithm="HS256")
+
     return {
-        "token": token,
-        "expiration": datetime.datetime.now(
-            datetime.timezone.utc) + datetime.timedelta(minutes=-150)
+        "access_token": access_token,
+        "access_expiration": access_expiration_time.strftime('%Y-%m-%d %H:%M:%S'),
+        "refresh_token": refresh_token,
+        "refresh_expiration": refresh_expiration_time.strftime('%Y-%m-%d %H:%M:%S')
     }

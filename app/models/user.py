@@ -35,8 +35,10 @@ class User(db.Model):
         return {
             'id': self.id,
             'email': self.email,
-            'token': new_token["token"],
-            'expiration': new_token["expiration"]
+            'access_token': new_token["access_token"],
+            'access_expiration': new_token["access_expiration"],
+            'refresh_token': new_token["refresh_token"],
+            'refresh_expiration': new_token["refresh_expiration"]
         }
 
     def set_password(self, plain_password):
