@@ -1,4 +1,5 @@
 from flask import jsonify, request
+import bcrypt
 import uuid
 from ..models.user import User, UserSchema
 from ..utils.uuid import is_valid_uuid
@@ -42,16 +43,23 @@ def post_user_service():
     # if not data or 'username' not in data or 'email' not in data:
     #     return {"message": "Missing some attribute"}
 
+    # password, converte into bytes
+    # passwordByte = user_data['password'].encode('utf-8')
+    # passwordCrypted = bcrypt.hashpw(passwordByte, bcrypt.gensalt())
+
     new_user = User(
         id=str(uuid.uuid4()),  # Use UUID for user ID
         username=user_data['username'],
         email=user_data['email'],
     )
 
+    # password
+    new_user.set_password(user_data['password'])
+
     db.session.add(new_user)
     db.session.commit()
 
-    return schema.dump(new_user.to_dict())
+    return schema.dump(new_user.post_to_dict(user_data['password']))
 
 
 # patch
@@ -75,7 +83,7 @@ def patch_user_service(user_id):
 
     db.session.commit()
 
-    return user.to_dict()
+    return user.to_dict(data)
 
 
 # delete
